@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/gowrishankar19/27cicd-project'
+                    url: 'https://github.com/gowrishankar19/31cicd-project'
             }
         }
 
