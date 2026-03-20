@@ -57,11 +57,11 @@ pipeline {
         stage('Deploy to K3s') {
             steps {
                 withCredentials([file(credentialsId: 'k3s-config', variable: 'KCFG')]) {
-                    sh """
+                    sh '''
                     export KUBECONFIG=$KCFG
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
-                    """
+                    '''
                 }
             }
         }
