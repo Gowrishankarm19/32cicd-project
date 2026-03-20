@@ -54,11 +54,11 @@ pipeline {
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
 
-                    # Update image dynamically (BEST PRACTICE)
+                    # Update image safely (no YAML editing)
                     kubectl set image deployment/project1 \
-                    project1='"${IMAGE_NAME}:${BUILD_NUMBER}"' --record
+                    project1='"${IMAGE_NAME}:${BUILD_NUMBER}"'
 
-                    # Verify rollout
+                    # Wait for rollout
                     kubectl rollout status deployment/project1
                     '''
                 }
