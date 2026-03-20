@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDS    = credentials('dockerhub-creds')
-        KUBECONFIG_DATA = credentials('k3s-config')
-        IMAGE_NAME      = "gowrishankar19/project1"
+        IMAGE_NAME = "gowrishankar19/project1"
     }
 
     stages {
@@ -31,9 +29,9 @@ pipeline {
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS'
                 )]) {
-                    sh """
+                    sh '''
                     echo "$PASS" | docker login -u "$USER" --password-stdin
-                    """
+                    '''
                 }
             }
         }
@@ -46,21 +44,22 @@ pipeline {
             }
         }
 
-        stage('Update YAML with New Image') {
-            steps {
-                sh """
-                sed -i 's|image:.*|image: ${IMAGE_NAME}:${BUILD_NUMBER}|g' deployment.yaml
-                """
-            }
-        }
-
         stage('Deploy to K3s') {
             steps {
                 withCredentials([file(credentialsId: 'k3s-config', variable: 'KCFG')]) {
                     sh '''
                     export KUBECONFIG=$KCFG
+
+                    # Apply base manifests
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
+
+                    # Update image dynamically (BEST PRACTICE)
+                    kubectl set image deployment/project1 \
+                    project1='"${IMAGE_NAME}:${BUILD_NUMBER}"' --record
+
+                    # Verify rollout
+                    kubectl rollout status deployment/project1
                     '''
                 }
             }
