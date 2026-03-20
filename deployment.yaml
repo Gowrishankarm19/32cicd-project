@@ -3,17 +3,17 @@ kind: Deployment
 metadata:
   name: frontend-app
 spec:
-  replicas: 1 
+  replicas: 1
   selector:
     matchLabels:
       app: frontend-app
-   template:
-     metadata:
-       labels:
-         app: frontend-app
-     spec:
-       containers:
-       - name: frontend-container
-         image: gowrishankar19/project1:latest  # Jenkins will replace this line
-         ports:
-         - containerPort: 80
+  template:              # ✅ FIXED INDENTATION
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      containers:
+        - name: frontend-container
+          image: gowrishankar19/project1:latest
+          ports:
+            - containerPort: 80
