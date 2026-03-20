@@ -50,15 +50,12 @@ pipeline {
                     sh '''
                     export KUBECONFIG=$KCFG
 
-                    # Apply base manifests
                     kubectl apply -f deployment.yaml
                     kubectl apply -f service.yaml
 
-                    # Update image safely (no YAML editing)
                     kubectl set image deployment/project1 \
                     project1='"${IMAGE_NAME}:${BUILD_NUMBER}"'
 
-                    # Wait for rollout
                     kubectl rollout status deployment/project1
                     '''
                 }
